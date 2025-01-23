@@ -1,0 +1,103 @@
+/* General body styling */
+body {
+    background: linear-gradient(135deg, rgba(96, 143, 149, 1) 0%, rgba(0, 133, 136, 1) 9%, rgba(12, 36, 73, 1) 52%, rgba(26, 30, 59, 1) 100%);
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Center container styling */
+.container {
+    margin-top: 50px;
+}
+
+/* Chat panel */
+.panel {
+    border: 6px solid transparent;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Chat panel header */
+.panel-heading {
+    background-color: #0c2735;
+    color: white;
+    border-radius: 20px 20px 0 0;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Chat messages area */
+.fixed-panel {
+    min-height: 400px;
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: #19313c;
+    padding: 10px;
+    border-radius: 0 0 20px 20px;
+}
+
+/* User message styling */
+.media-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Bot messages */
+.media-body {
+    margin-bottom: 15px;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+/* User messages (green color, right-aligned) */
+.media-body:nth-child(odd) {
+    background-color: #2efe2e;
+    text-align: right;
+    color: #000;
+}
+
+/* Bot messages (white color, left-aligned) */
+.media-body:nth-child(even) {
+    background-color: white;
+    text-align: left;
+    color: #000;
+}
+
+/* Chat panel footer */
+.panel-footer {
+    background-color: #0c2735;
+    padding: 15px;
+    border-top: 1px solid #0c2735;
+    border-radius: 0 0 20px 20px;
+}
+
+/* Input group styling */
+.input-group input {
+    border-radius: 15px;
+    border: 1px solid #0c2735;
+}
+
+.input-group .btn {
+    border-radius: 15px;
+    margin-left: 5px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        margin-top: 20px;
+    }
+    .panel {
+        border-radius: 15px;
+    }
+    .panel-heading {
+        font-size: 16px;
+    }
+    .panel-footer {
+        padding: 10px;
+    }
+}

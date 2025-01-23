@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Chatbot</title>
+
+        <!-- Link to your custom CSS file -->
+        <link rel="stylesheet" href="style.css">
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- Font Awesome for icons -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <h3 class="text-center text-white">
+                    <small><strong>Artificial</strong></small> Intelligence!!! 
+                    <small><strong>Here</strong></small> I am...
+                </h3>
+                <div class="col-md-6 col-lg-4 offset-md-3 offset-lg-4">
+                    <div id="chatPanel" class="panel panel-info">
+                        <div class="panel-heading text-center text-white bg-dark">
+                            <strong><i class="fas fa-robot"></i> Talk with Me !!! (You: Green / Bot: White)</strong>
+                        </div>
+                        <div class="panel-body fixed-panel">
+                            <ul class="media-list"></ul>
+                        </div>
+                        <div class="panel-footer">
+                            <form id="chatbot-form">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Enter Message" name="messageText" id="messageText" />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-info" type="button" id="chatbot-form-btn">Send</button>
+                                        <button class="btn btn-secondary" type="button" id="chatbot-form-btn-clear">Clear</button>
+                                        <button class="btn btn-primary" type="button" id="chatbot-form-btn-voice">Voice</button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Speech-to-Text JS -->
+        <script src="https://unpkg.com/speech-to-text@0.7.4/lib/index.js"></script>
+
+        <!-- Chatbot Logic -->
+        <script>
+            $(function () {
+                var synth = window.speechSynthesis;
+                var msg = new SpeechSynthesisUtterance();
+                
+                synth.onvoiceschanged = () => {
+                    msg.voice = synth.getVoices()[0];
+                };
+
+                $('#chatbot-form-btn').click(function (e) {
+                    e.preventDefault();
+                    $('#chatbot-form').submit();
+                });
+
+                $('#chatbot-form-btn-clear').click(function (e) {
+                    e.preventDefault();
+                    $('#chatPanel').find('.media-list').html('');
+                });
+
+                $('#chatbot-form-btn-voice').click(function (e) {
+                    e.preventDefault();
+                    try {
+                        var listener = new SpeechToText(
+                            (text) => console.log('Interim: ', text),
+                            (text) => $('#messageText').val(text),
+                            () => $('#chatbot-form-btn').click()
+                        );
+                        listener.startListening();
+                        setTimeout(() => listener.stopListening(), 5000);
+                    } catch (err) {
+                        console.error(err);
+                        alert('Speech-to-text not supported!');
+                    }
+                });
+
+                $('#chatbot-form').submit(function (e) {
+                    e.preventDefault();
+                    var message = $('#messageText').val();
+                    $(".media-list").append('<li class="media"><div class="media-body"><div class="media"><div style="text-align:right; color:#2EFE2E;" class="media-body">' + message + '<hr/></div></div></div></li>');
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/ask",
+                        data: $(this).serialize(),
+                        success: function (response) {
+                            var answer = response.answer;
+                            $(".media-list").append('<li class="media"><div class="media-body"><div class="media"><div style="color:white;" class="media-body">' + answer + '<hr/></div></div></div></li>');
+                            $(".fixed-panel").stop().animate({ scrollTop: $(".fixed-panel")[0].scrollHeight }, 1000);
+                            msg.text = answer;
+                            speechSynthesis.speak(msg);
+                        },
+                        error: function (err) {
+                            console.error(err);
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
